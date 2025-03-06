@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies..."
+      - npm install
+  build:
+    commands:
+      - echo "Zipping Lambda function..."
+      - zip -r lambda.zip . -x "*.git*" # Excludes .git files
+  post_build:
+    commands:
+      - echo "Uploading to S3..."
+      - aws s3 cp lambda.zip s3://lambda-ci-cd-artifacts/
+artifacts:
+  files:
+    - lambda.zip
