@@ -8,11 +8,14 @@ phases:
   build:
     commands:
       - echo "Zipping Lambda function..."
-      - zip -r lambda.zip . -x "*.git*" # Excludes .git files
+      - zip -r lambda.zip . -x "*.git*"
   post_build:
     commands:
       - echo "Uploading to S3..."
       - aws s3 cp lambda.zip s3://lambda-ci-cd-artifacts/
+      - echo "Deploying to AWS Lambda..."
+      - aws lambda update-function-code --function-name nodejs-ci-cd-lambda-server --s3-bucket lambda-ci-cd-artifacts --s3-key lambda.zip
+
 artifacts:
   files:
     - lambda.zip
